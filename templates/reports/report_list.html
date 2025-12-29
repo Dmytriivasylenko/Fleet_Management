@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Service History</h1>
+
+<button class="btn"
+        hx-get="{% url 'vehicle_form_modal' %}"
+        hx-target="#modal-container"
+        hx-swap="innerHTML">
+    Add Vehicle
+</button>
+
+<div id="modal-container"></div>
+
+<hr>
+
+<form hx-post="{% url 'add_service_htmx' %}"
+      hx-target="#service-table-body"
+      hx-swap="beforeend">
+    {% csrf_token %}
+    <label>Vehicle</label>
+    <select name="vehicle" required>
+        {% for v in vehicles %}
+            {% include "partials/vehicles/partials/vehicle_option.html" with vehicle=v %}
+        {% endfor %}
+    </select>
+
+    <input type="date" name="service_date" value="{{ today|default:None }}">
+    <input type="text" name="service_type" placeholder="Type" required>
+    <input type="number" step="0.01" name="cost" placeholder="Cost" required>
+    <input type="number" name="odometer_at_service" placeholder="Odometer reading">
+    <input type="date" name="next_service_date" placeholder="Next service">
+    <textarea name="notes" placeholder="Notes"></textarea>
+
+    <button class="btn">Add Service</button>
+</form>
+
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>Vehicle</th><th>Service</th><th>Cost</th><th>Next</th><th>Odometer</th><th>Notes</th>
+        </tr>
+    </thead>
+    <tbody id="service-table-body">
+        {% for s in service_histories %}
+            {% include "partials/service/partials/service_row.html" with service=s %}
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

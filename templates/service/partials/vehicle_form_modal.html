@@ -1,0 +1,53 @@
+<div id="vehicle-modal">
+
+  <div class="modal-backdrop"
+       style="position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999;"
+       onclick="document.getElementById('vehicle-modal')?.remove()"></div>
+
+  <div class="modal" style="position: fixed; top: 50%; left: 50%;
+       transform: translate(-50%, -50%); background: white; padding: 25px;
+       border-radius: 8px; width: 420px; z-index: 1000;">
+
+    <h2>Add Vehicle</h2>
+
+    <form
+        hx-post="{% url 'add_vehicle_htmx' %}"
+        hx-target="#vehicle-select"
+        hx-swap="beforeend"
+        hx-on="htmx:afterOnLoad: document.getElementById('vehicle-modal')?.remove()">
+
+        {% csrf_token %}
+
+        <div class="form-row">
+            <label>Make:</label>
+            <input type="text" name="make" required>
+        </div>
+
+        <div class="form-row">
+            <label>Model:</label>
+            <input type="text" name="model" required>
+        </div>
+
+        <div class="form-row">
+            <label>Year:</label>
+            <input type="number" name="year" min="1900" required>
+        </div>
+
+        <div class="form-row">
+            <label>VIN:</label>
+            <input type="text" name="vin" required>
+        </div>
+
+        <div class="form-row">
+            <label>Odometer:</label>
+            <input type="number" name="odometer_reading" required>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Save Vehicle</button>
+        <button type="button" class="btn btn-secondary"
+                onclick="document.getElementById('vehicle-modal')?.remove()">
+            Cancel
+        </button>
+    </form>
+  </div>
+</div>

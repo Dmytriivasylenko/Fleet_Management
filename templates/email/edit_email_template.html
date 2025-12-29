@@ -1,0 +1,20 @@
+<!-- templates/edit_email_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Email Template</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Edit Email Template</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+{% endblock %}
+</body>
+</html>

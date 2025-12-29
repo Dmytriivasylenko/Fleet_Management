@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Drivers</h1>
+
+<button class="btn"
+        hx-get="{% url 'driver_create' %}"
+        hx-target="#modal"
+        hx-trigger="click"
+        hx-swap="innerHTML">
+    Add Driver
+</button>
+
+<div id="modal"></div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>License</th>
+            <th>Phone</th>
+            <th>Car</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody id="driver-table-body">
+        {% for driver in drivers %}
+            {% include "drivers/partials/driver_row.html" %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

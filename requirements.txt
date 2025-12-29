@@ -1,0 +1,7 @@
+Django==5.2.8
+gunicorn
+psycopg2-binary
+djangorestframework
+celery
+django_celery_beat
+whitenoise

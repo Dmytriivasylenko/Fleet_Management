@@ -1,0 +1,39 @@
+<tr id="service-{{ service.id }}"
+    class="service-row"
+    style="cursor:pointer;"
+    hx-get="{% url 'service_detail_htmx' service.id %}"
+    hx-target="#side-panel-container"
+    hx-swap="innerHTML">
+
+    <td>{{ service.vehicle }}</td>
+    <td>{{ service.service_type }}</td>
+    <td>${{ service.cost }}</td>
+    <td>{{ service.service_date }}</td>
+
+    <td class="{% if service.next_service_date < today %}overdue{% endif %}">
+        {{ service.next_service_date }}
+    </td>
+
+    <td>{{ service.odometer_at_service }}</td>
+
+    <td>{{ service.notes|truncatechars:40 }}</td>
+
+    <td style="text-align:right; white-space:nowrap;">
+
+        <button class="btn btn-secondary small"
+                hx-post="{% url 'service_duplicate' service.id %}"
+                hx-target="#services-table-body"
+                hx-swap="afterbegin">
+            ⎘
+        </button>
+
+        <button class="btn btn-danger small"
+                hx-delete="{% url 'service_delete' service.id %}"
+                hx-target="#service-{{ service.id }}"
+                hx-swap="outerHTML"
+                hx-on="htmx:afterOnLoad: closeServicePanel()">
+            🗑
+        </button>
+
+    </td>
+</tr>

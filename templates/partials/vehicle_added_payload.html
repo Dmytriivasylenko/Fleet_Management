@@ -1,0 +1,17 @@
+<script>
+/* Додаємо новий <option> у select */
+const select = document.querySelector("select[name='vehicle_id']");
+if (select) {
+    const opt = document.createElement("option");
+    opt.value = "{{ vehicle.id }}";
+    opt.textContent = "{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})";
+    opt.selected = true;
+    select.appendChild(opt);
+}
+
+/* Закриття модалки */
+const modal = document.getElementById("vehicleModal");
+if (modal) modal.remove();
+</script>
+
+<!-- Нічого не рендеримо на сторінку -->

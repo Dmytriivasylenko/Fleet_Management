@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>view report</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Report for {{ report.vehicle }} and {{ report.driver }}</h2>
+    <p>Period: {{ report.start_date }} - {{ report.end_date }}</p>
+
+    <h3>Service History</h3>
+    {% if report_data.service_history %}
+        <ul>
+            {% for service in report_data.service_history %}
+                <li>{{ service.service_date }}: {{ service.service_type }} - ${{ service.cost }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No service history found for this period.</p>
+    {% endif %}
+
+    <h3>Total Costs</h3>
+    <p>${{ report_data.total_cost }}</p>
+{% endblock %}
+
+</body>
+</html>

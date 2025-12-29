@@ -1,0 +1,17 @@
+{# templates/partials/service_row.html #}
+<tr id="service-{{ service.id }}" class="service-row"
+    hx-get="{% url 'service_detail_htmx' service.id %}"
+    hx-target="#side-panel-container"
+    hx-swap="innerHTML">
+    <td>{{ service.vehicle }}</td>
+    <td>{{ service.service_type }}</td>
+    <td>{{ service.cost }}</td>
+    <td>{{ service.service_date }}</td>
+    <td class="{% if service.next_service_date and service.next_service_date < today %}overdue{% endif %}">{{ service.next_service_date }}</td>
+    <td>{{ service.odometer_at_service }}</td>
+    <td>{{ service.notes|truncatechars:50 }}</td>
+    <td style="text-align:right;">
+        <button hx-post="{% url 'service_duplicate' service.id %}" hx-target="#services-table-body" hx-swap="afterbegin" class="btn btn-secondary small">⎘</button>
+        <button hx-delete="{% url 'service_delete' service.id %}" hx-target="#service-{{ service.id }}" hx-swap="outerHTML" class="btn btn-danger small">🗑</button>
+    </td>
+</tr>

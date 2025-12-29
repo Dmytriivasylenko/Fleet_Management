@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1 class="page-title">Service History</h1>
+
+<div class="filters-bar">
+
+    <button class="btn btn-secondary"
+            hx-get="{% url 'vehicle_form_modal' %}"
+            hx-target="body"
+            hx-swap="beforeend">
+        + Add Vehicle
+    </button>
+
+    <input type="text"
+           class="input search-input"
+           placeholder="🔍 Search services..."
+           hx-get="{% url 'service_history_search' %}"
+           hx-trigger="keyup changed delay:300ms"
+           hx-target="#services-table-body">
+</div>
+
+<div class="filters-bar">
+
+    <input type="date" class="input"
+           name="from"
+           hx-get="{% url 'service_history_date_filter' %}"
+           hx-trigger="change"
+           hx-target="#services-table-body">
+
+    <input type="date" class="input"
+           name="to"
+           hx-get="{% url 'service_history_date_filter' %}"
+           hx-trigger="change"
+           hx-target="#services-table-body">
+
+    <input type="number" class="input"
+           name="min"
+           placeholder="Min cost"
+           hx-get="{% url 'service_history_cost_filter' %}"
+           hx-trigger="keyup changed delay:300ms"
+           hx-target="#services-table-body">
+
+    <input type="number" class="input"
+           name="max"
+           placeholder="Max cost"
+           hx-get="{% url 'service_history_cost_filter' %}"
+           hx-trigger="keyup changed delay:300ms"
+           hx-target="#services-table-body">
+
+</div>
+
+<hr>
+
+<!-- ADD SERVICE -->
+<div class="card card-form">
+    <h2>Add Service</h2>
+
+    <form class="service-form"
+          hx-post="{% url 'add_service_htmx' %}"
+          hx-target="#services-table-body"
+          hx-swap="beforeend">
+
+        {% csrf_token %}
+
+        <div class="grid2">
+            <select class="input" name="vehicle" required>
+                <option value="" disabled selected>Select vehicle</option>
+                {% for v in vehicles %}
+                <option value="{{ v.id }}">{{ v.make }} {{ v.model }} ({{ v.year }})</option>
+                {% endfor %}
+            </select>
+
+            <input type="text" name="service_type" class="input" placeholder="Service Type" required>
+        </div>
+
+        <div class="grid3">
+            <input type="number" step="0.01" name="cost" class="input" placeholder="Cost" required>
+            <input type="date" name="service_date" class="input" required>
+            <input type="date" name="next_service_date" class="input" required>
+        </div>
+
+        <input type="number" name="odometer_at_service" class="input" placeholder="Odometer" required>
+
+        <textarea name="notes" class="input textarea" placeholder="Notes..."></textarea>
+
+        <button type="submit" class="btn btn-primary full-width">Add Service</button>
+    </form>
+</div>
+
+<hr>
+
+<h2>Service List</h2>
+
+<div class="table-wrapper">
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th><a hx-get="{% url 'service_history_sort' %}" hx-vals='{"column":"vehicle"}' hx-target="#services-table-body">Vehicle ⬍</a></th>
+            <th><a hx-get="{% url 'service_history_sort' %}" hx-vals='{"column":"service_type"}' hx-target="#services-table-body">Service ⬍</a></th>
+            <th><a hx-get="{% url 'service_history_sort' %}" hx-vals='{"column":"cost"}' hx-target="#services-table-body">Cost ⬍</a></th>
+            <th><a hx-get="{% url 'service_history_sort' %}" hx-vals='{"column":"next_service_date"}' hx-target="#services-table-body">Next ⬍</a></th>
+            <th><a hx-get="{% url 'service_history_sort' %}" hx-vals='{"column":"service_date"}' hx-target="#services-table-body">Service Date ⬍</a></th>
+            <th style="text-align:right;">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody id="services-table-body">
+        {% include "service/partials/services_table_body.html" %}
+    </tbody>
+</table>
+
+</div>
+
+<div id="side-panel-container"></div>
+
+<script>
+document.body.addEventListener("service_added", () => {
+    document.querySelector(".service-form")?.reset();
+});
+</script>
+
+{% endblock %}

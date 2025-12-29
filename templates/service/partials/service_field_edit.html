@@ -1,0 +1,12 @@
+<form
+    hx-post="{% url 'service_field_save' service.id field %}"
+    hx-target="#service-detail-panel"
+    hx-swap="outerHTML">
+
+    {% csrf_token %}
+    <input type="hidden" name="return_panel" value="1">
+
+    <label>Edit {{ field|capfirst }}</label>
+    <input class="input" name="value" value="{{ value }}">
+    <button class="btn btn-primary small" type="submit">Save</button>
+</form>

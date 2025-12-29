@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your fleet of vehicles and drivers with our comprehensive Fleet Management System.">
+    <title>Fleet Management - Home</title>
+    <style>
+        /* Reset & base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f6f8;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .navbar {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .navbar li {
+            margin: 0 15px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: #1e3c72;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #e3eaf4;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        main h2 {
+            font-size: 1.8rem;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        main p {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            list-style: none;
+        }
+
+        .quick-links li a {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #1e3c72;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: background 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+
+        .quick-links li a:hover {
+            background-color: #2a5298;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background-color: #fff;
+            text-align: center;
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Fleet Management System</h1>
+</header>
+
+<nav aria-label="Main navigation">
+    <ul class="navbar">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'vehicle_list' %}">Vehicles</a></li>
+        <li><a href="{% url 'service_history_list' %}">Service History</a></li>
+
+        <!-- Drivers temporarily disabled -->
+        <!-- <li><a href="{% url 'driver_list' %}">Drivers</a></li> -->
+
+        <li><a href="{% url 'report_list' %}">Reports</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h2>Welcome to the Fleet Management System</h2>
+    <p>Manage your fleet of vehicles, drivers, and service records efficiently and effectively.</p>
+
+    <ul class="quick-links">
+        <li><a href="{% url 'vehicle_list' %}">Vehicles</a></li>
+        <li><a href="{% url 'service_history_list' %}">View Service History</a></li>
+        <li><a href="{% url 'driver_list' %}">View Drivers</a></li>
+        <li><a href="{% url 'report_list' %}">View Reports</a></li>
+    </ul>
+</main>
+
+<footer>
+    &copy; {{ year }} Fleet Management System. All rights reserved.
+</footer>
+
+</body>
+</html>

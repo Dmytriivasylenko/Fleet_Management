@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle List</title>
+    <style>
+        /* Основні стилі для списку автомобілів */
+        .vehicle-list {
+            margin: 20px 0;
+        }
+
+        .vehicle-list ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .vehicle-list li {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vehicle-list a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .vehicle-list a:hover {
+            text-decoration: underline;
+        }
+
+        .add-vehicle-btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .add-vehicle-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-link {
+            color: #dc3545;
+            text-decoration: none;
+        }
+
+        .delete-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Vehicles</h2>
+    <a href="{% url 'vehicle_create' %}" class="add-vehicle-btn">Add New Vehicle</a>
+    <div class="vehicle-list">
+        <ul>
+            {% for vehicle in vehicles %}
+            <li>
+                {{ vehicle }} 
+                <span>
+                    <a href="{% url 'vehicle_update' vehicle.pk %}">Edit</a> | 
+                    <a href="{% url 'vehicle_delete' vehicle.pk %}" class="delete-link" onclick="return confirm('Are you sure you want to delete this vehicle?');">Delete</a>
+                </span>
+            </li>
+            {% empty %}
+            <li>No vehicles found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+</body>
+</html>

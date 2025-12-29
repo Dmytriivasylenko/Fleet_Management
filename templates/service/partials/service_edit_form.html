@@ -1,0 +1,90 @@
+{# templates/partials/service_edit_form.html #}
+<div id="service-edit-panel" class="detail-panel slide-in">
+  <div class="panel-header">
+    <h3>Edit Service #{{ service.id }}</h3>
+    <button class="close-btn" onclick="closeServicePanel()">✕</button>
+  </div>
+
+  <div class="panel-body">
+    <form id="service-edit-form"
+          hx-post="{% url 'service_update_htmx' service.id %}"
+          hx-target="#side-panel-container"
+          hx-swap="innerHTML"
+          class="edit-form">
+
+      {% csrf_token %}
+
+      <div class="panel-field">
+        <label for="id_vehicle">Vehicle</label>
+        <select name="vehicle" id="id_vehicle" class="input">
+          {% for v in vehicles %}
+            <option value="{{ v.id }}" {% if service.vehicle_id == v.id %}selected{% endif %}>
+              {{ v.make }} {{ v.model }} ({{ v.year }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="panel-field">
+        <label for="id_service_type">Service Type</label>
+        <input type="text" name="service_type" id="id_service_type" value="{{ service.service_type }}" class="input" required>
+      </div>
+
+      <div class="panel-field">
+        <label for="id_cost">Cost</label>
+        <input type="number" step="0.01" name="cost" id="id_cost" value="{{ service.cost }}" class="input">
+      </div>
+
+      <div class="panel-field">
+        <label for="id_service_date">Service Date</label>
+        <input type="date" name="service_date" id="id_service_date" value="{{ service.service_date }}" class="input">
+      </div>
+
+      <div class="panel-field">
+        <label for="id_next_service_date">Next Service Date</label>
+        <input type="date" name="next_service_date" id="id_next_service_date" value="{{ service.next_service_date }}" class="input">
+      </div>
+
+      <div class="panel-field">
+        <label for="id_odometer">Odometer</label>
+        <input type="number" name="odometer_at_service" id="id_odometer" value="{{ service.odometer_at_service }}" class="input">
+      </div>
+
+      <div class="panel-field">
+        <label for="id_notes">Notes</label>
+        <textarea name="notes" id="id_notes" class="input" rows="5">{{ service.notes }}</textarea>
+      </div>
+
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="submit" class="btn btn-primary" title="Save">Save</button>
+
+        <!-- Cancel: повертає детальну панель (детально оновлену) -->
+        <button type="button" class="btn btn-secondary"
+                hx-get="{% url 'service_detail_htmx' service.id %}"
+                hx-target="#side-panel-container"
+                hx-swap="innerHTML">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+/* reuse same basic styles as detail panel */
+.edit-form .panel-field .input { width:100%; padding:8px; border-radius:6px; border:1px solid #e2e6ee; }
+</style>
+
+<script>
+/* Після успішного збереження сервер поверне оновлену service_detail_panel.html у #side-panel-container.
+   Також тригеримо highlightNewRow() якщо потрібне підсвічування — сервер може вставити скрипт або ми слухаємо подію htmx:afterSwap */
+document.body.addEventListener('htmx:afterSwap', function(e){
+  // якщо вставлено оновлену панель або рядок — підсвітити рядок
+  try {
+    if (e.detail.target && e.detail.target.id === 'side-panel-container') {
+      // викликаємо глобальну функцію highlightNewRow, якщо вона існує
+      if (typeof highlightNewRow === 'function') highlightNewRow();
+    }
+  } catch (err) { console.warn(err) }
+});
+</script>

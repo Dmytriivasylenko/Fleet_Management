@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Report for {{ report.vehicle }}</h1>
+<p>Period: {{ report.start_date }} — {{ report.end_date }}</p>
+
+<h2>Summary</h2>
+<ul>
+    <li>Total services: {{ data.service_count }}</li>
+    <li>Total cost: {{ data.total_cost }}</li>
+    <li>Average cost: {{ data.avg_cost }}</li>
+</ul>
+
+<h2>Odometer analytics</h2>
+{% if data.odo_stats.has_data %}
+    <ul>
+        <li>Total distance in range: {{ data.odo_stats.distance_total }} km</li>
+        <li>Avg km/day: {{ data.odo_stats.avg_km_per_day }}</li>
+        <li>Avg km between services: {{ data.odo_stats.avg_km_between_services }}</li>
+    </ul>
+{% else %}
+    <p>No odometer data enough for analytics (sample points: {{ data.odo_stats.sample_points }}).</p>
+{% endif %}
+
+<h2>Services</h2>
+<table>
+    <thead><tr><th>Date</th><th>Type</th><th>Cost</th><th>Odometer</th><th>Notes</th></tr></thead>
+    <tbody>
+    {% for s in data.services %}
+        <tr>
+            <td>{{ s.service_date }}</td>
+            <td>{{ s.service_type }}</td>
+            <td>{{ s.cost }}</td>
+            <td>{{ s.odometer_at_service }}</td>
+            <td>{{ s.notes }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

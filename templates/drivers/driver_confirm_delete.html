@@ -1,0 +1,12 @@
+<div class="modal">
+    <h3>Delete driver?</h3>
+
+    <p>{{ object.name }}</p>
+
+    <form hx-delete="{% url 'driver_delete' object.id %}"
+          hx-target="#driver-{{ object.id }}"
+          hx-swap="outerHTML">
+        {% csrf_token %}
+        <button class="btn danger">Confirm</button>
+    </form>
+</div>

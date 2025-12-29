@@ -1,0 +1,25 @@
+<option value="{{ vehicle.id }}" selected>
+    {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})
+</option>
+
+<script>
+document.addEventListener("htmx:afterSwap", function(evt) {
+    // Перевіряємо, що вставлено саме vehicle_option
+    const inserted = evt.detail.target.querySelector('option[data-new-vehicle]');
+    if (!inserted) return;
+
+    // 1) Плавна підсвітка нової опції
+    inserted.style.background = "#d1ffd1";
+    setTimeout(() => {
+        inserted.style.transition = "background 1s ease";
+        inserted.style.background = "";
+    }, 50);
+
+    // 2) Прокрутка до select
+    inserted.parentElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    // 3) Автоматично сфокусуватися на полі service_type
+    const nextInput = document.querySelector("input[name='service_type']");
+    if (nextInput) nextInput.focus();
+});
+</script>

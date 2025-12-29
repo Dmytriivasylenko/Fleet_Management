@@ -1,0 +1,41 @@
+name: Fleet-management-system
+
+services:
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: my_db
+      POSTGRES_USER: my_user
+      POSTGRES_PASSWORD: my_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn fleet_management.wsgi:application --bind 0.0.0.0:8000
+      "
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - ./static:/app/static     # OK
+      # ⚠️ НЕ ДОДАВАТИ staticfiles сюди!
+    environment:
+      DJANGO_DB_NAME: my_db
+      DJANGO_DB_USER: my_user
+      DJANGO_DB_PASSWORD: my_pass
+      DJANGO_DB_HOST: db
+      DJANGO_DB_PORT: 5432
+
+volumes:
+  pgdata:

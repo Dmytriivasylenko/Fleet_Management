@@ -1,0 +1,104 @@
+{# templates/partials/service_detail_panel.html #}
+<div id="service-detail-panel" class="detail-panel slide-in">
+
+  <div class="panel-header">
+    <h3>Service #{{ service.id }}</h3>
+    <button class="close-btn" onclick="closeServicePanel()">✕</button>
+  </div>
+
+  <div class="panel-body">
+    <div class="panel-field">
+      <label>Vehicle</label>
+      <div class="value">{{ service.vehicle }}</div>
+    </div>
+
+    <div class="panel-field">
+      <label>Service Type</label>
+      <div class="value">{{ service.service_type }}</div>
+    </div>
+
+    <div class="panel-field">
+      <label>Cost</label>
+      <div class="value">${{ service.cost }}</div>
+    </div>
+
+    <div class="panel-field">
+      <label>Service Date</label>
+      <div class="value">{{ service.service_date }}</div>
+    </div>
+
+    <div class="panel-field">
+      <label>Next Service</label>
+      <div class="value {% if service.next_service_date and service.next_service_date < today %}overdue{% endif %}">
+        {{ service.next_service_date }}
+      </div>
+    </div>
+
+    <div class="panel-field">
+      <label>Odometer</label>
+      <div class="value">{{ service.odometer_at_service }} km</div>
+    </div>
+
+    <div class="panel-field">
+      <label>Notes</label>
+      <div class="value notes-block">
+        {{ service.notes|default:"No notes"|linebreaksbr }}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-footer">
+    <div style="display:flex; gap:8px;">
+      <!-- Edit: підвантажує форму редагування в ту ж область side-panel -->
+      <button class="btn btn-secondary"
+              hx-get="{% url 'service_edit_htmx' service.id %}"
+              hx-target="#side-panel-container"
+              hx-swap="innerHTML"
+              title="Edit service">
+        ✎ Edit
+      </button>
+
+      <!-- Duplicate -->
+      <button class="btn btn-secondary"
+              hx-post="{% url 'service_duplicate' service.id %}"
+              hx-target="#services-table-body"
+              hx-swap="afterbegin"
+              hx-on="htmx:afterOnLoad: highlightNewRow()">
+        ⎘ Duplicate
+      </button>
+    </div>
+
+    <div style="margin-left:auto; display:flex; gap:8px;">
+      <button class="btn btn-danger"
+              hx-delete="{% url 'service_delete' service.id %}"
+              hx-target="#service-{{ service.id }}"
+              hx-swap="outerHTML"
+              hx-on="htmx:afterOnLoad: closeServicePanel()">
+        🗑 Delete
+      </button>
+
+      <button class="btn" onclick="closeServicePanel()">Close</button>
+    </div>
+  </div>
+</div>
+
+<style>
+/* мінімальний стиль (якщо у тебе загальний CSS — можна прибрати) */
+.detail-panel { position: fixed; right:0; top:0; width:380px; height:100vh; background:#fff; box-shadow:-6px 0 20px rgba(0,0,0,.12); padding:18px; display:flex; flex-direction:column; z-index:9999; }
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.panel-body{overflow:auto; flex:1; padding-right:6px}
+.panel-field{margin-bottom:14px}
+.panel-field label{font-weight:700;color:#444;margin-bottom:6px;display:block}
+.panel-field .value{background:#f6f8fb;padding:8px;border-radius:6px}
+.panel-footer{display:flex; gap:12px; margin-top:12px; align-items:center}
+.overdue{color:#d9534f;font-weight:700}
+.notes-block{max-height:220px; overflow:auto}
+.close-btn{background:transparent;border:0;font-size:20px;cursor:pointer}
+</style>
+
+<script>
+function closeServicePanel() {
+  const container = document.getElementById('side-panel-container');
+  if (container) container.innerHTML = '';
+}
+</script>

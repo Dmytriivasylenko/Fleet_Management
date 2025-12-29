@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Service History</h2>
+
+<!-- 🔥 Фільтр по авто -->
+<div class="top-controls" style="margin-bottom: 20px;">
+
+    <!-- Кнопка для нового авто -->
+    <button class="btn"
+            hx-get="{% url 'vehicle_form_modal' %}"
+            hx-target="body"
+            hx-swap="beforeend">
+        Add New Vehicle
+    </button>
+
+    <!-- Фільтр по авто -->
+    <select id="serviceFilter"
+            hx-get="{% url 'service_history_filter' %}"
+            hx-target="#serviceTableBody"
+            hx-trigger="change"
+            name="vehicle"
+            class="filter-select"
+            style="margin-left: 20px;">
+
+        <option value="">All Vehicles</option>
+
+        {% for v in vehicles %}
+            <option value="{{ v.id }}">{{ v.make }} {{ v.model }} ({{ v.year }})</option>
+        {% endfor %}
+    </select>
+</div>
+
+<!-- Форма додавання сервісу -->
+<form hx-post="{% url 'add_service_htmx' %}"
+      hx-target="#serviceTableBody"
+      hx-swap="beforeend"
+      style="margin-bottom: 20px;">
+
+    {% csrf_token %}
+
+    <select name="vehicle" id="vehicleSelect" required>
+        {% for vehicle in vehicles %}
+            <option value="{{ vehicle.id }}">{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</option>
+        {% endfor %}
+    </select>
+
+    <input type="text" name="service_type" placeholder="Service Type" required>
+    <input type="number" step="0.01" name="cost" placeholder="Cost" required>
+    <input type="date" name="next_service_date" required>
+    <input type="date" name="service_date" required>
+    <input type="number" name="odometer_at_service" placeholder="Odometer" required>
+
+    <textarea name="notes" placeholder="Notes"></textarea>
+
+    <button type="submit" class="btn">Add Service</button>
+</form>
+
+<!-- Таблиця сервісів -->
+<table id="serviceTable" border="1" width="100%">
+    <thead>
+        <tr>
+            <th>Vehicle</th>
+            <th>Service Type</th>
+            <th>Cost</th>
+            <th>Next Service</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+
+    <!-- 🔥 Використовуємо partial -->
+    <tbody id="serviceTableBody">
+        {% include "partials/service/partials/services_table_body.html" %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+<div class="modal-overlay" hx-target="this" hx-swap="outerHTML">
+    <div class="modal">
+        <h2>Edit Service</h2>
+
+        <form
+            hx-post="{% url 'update_service_htmx' service.id %}"
+            hx-target="#service-{{ service.id }}"
+            hx-swap="outerHTML">
+
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button class="btn">Save</button>
+        </form>
+
+        <button class="btn-close"
+                hx-get=""
+                hx-target="#modal"
+                hx-swap="innerHTML">✖</button>
+    </div>
+</div>

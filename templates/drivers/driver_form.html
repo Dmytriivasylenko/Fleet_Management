@@ -1,0 +1,10 @@
+<div class="modal">
+    <h3>{{ view.title|default:"Driver Form" }}</h3>
+
+    <form hx-post="" hx-target="#driver-table-body" hx-swap="beforeend">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button class="btn">Save</button>
+    </form>
+</div>
