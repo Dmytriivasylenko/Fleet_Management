@@ -18,8 +18,7 @@ class VehicleCreateView(CreateView):
     model = Vehicle
     form_class = VehicleForm
     template_name = "vehicles/vehicle_form.html"
-    success_url = reverse_lazy("vehicle_list")
-
+    success_url = reverse_lazy("fleet:vehicles:vehicle_list")
 class VehicleUpdateView(UpdateView):
     model = Vehicle
     form_class = VehicleForm
@@ -36,12 +35,20 @@ def vehicle_form_modal(request):
 
 @require_POST
 def add_vehicle_htmx(request):
-    form = VehicleForm(request.POST)
-    if form.is_valid():
-        vehicle = form.save()
-        # return option snippet (to append + set selected client-side)
-        return render(request, "partials/vehicle_option.html", {"vehicle": vehicle})
-    return HttpResponseBadRequest(form.errors.as_json())
+    v = Vehicle.objects.create(
+        make=request.POST.get("make"),
+        model=request.POST.get("model"),
+        year=request.POST.get("year") or None,
+        vin=request.POST.get("vin"),
+        odometer_reading=request.POST.get("odometer_reading") or 0,
+    )
+
+    return render(
+        request,
+        "service/partials/vehicle_option.html",
+        {"vehicle": v},
+    )
+
 
 @require_http_methods(["DELETE"])
 def vehicle_delete_htmx(pk):

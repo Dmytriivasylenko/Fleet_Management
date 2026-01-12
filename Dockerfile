@@ -13,6 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Вказуємо команду для запуску сервера
-RUN python manage.py collectstatic --noinput
+RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
 
 CMD ["gunicorn", "fleet_management.wsgi:application", "--bind", "0.0.0.0:8000"]

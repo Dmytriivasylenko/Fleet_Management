@@ -2,156 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fleet Management</title>
+    <title>{% block title %}Fleet Management{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% load static %}
 
     <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.4"></script>
-
-    <!-- Global Styles -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
     <style>
         :root {
             --primary: #1e3c72;
-            --primary-light: #2a5298;
-            --bg: #f5f7fa;
-            --text: #333;
-            --white: #fff;
-            --shadow: 0 3px 10px rgba(0,0,0,0.1);
-            --radius: 10px;
+            --primary-dark: #162c55;
+            --danger: #c0392b;
+            --gray: #7f8c8d;
+            --bg: #f5f7fb;
+            --text: #2c3e50;
+            --radius: 12px;
+            --shadow: 0 20px 50px rgba(0,0,0,.12);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { box-sizing: border-box; }
 
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", Roboto, Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
-        /* HEADER */
+        a { text-decoration: none; color: inherit; }
+
         header {
-            background: var(--primary);
-            color: var(--white);
-            padding: 18px 0;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 999;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 16px 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
         }
 
-        .header-container {
-            max-width: 1280px;
+        .header-inner {
+            max-width: 1200px;
             margin: auto;
-            padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        header h1 { font-size: 1.6rem; font-weight: 600; }
-
         nav ul {
-            display: flex;
-            gap: 20px;
             list-style: none;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin: 0;
         }
+
+        nav li { margin-left: 20px; }
 
         nav a {
-            padding: 8px 14px;
-            color: var(--white);
-            border-radius: 6px;
             font-weight: 500;
-            transition: 0.25s ease;
+            opacity: .85;
         }
 
-        nav a:hover, nav a.active { background: var(--primary-light); }
+        nav a:hover,
+        nav a.active {
+            opacity: 1;
+            text-decoration: underline;
+        }
 
-        main.content-container {
-            flex: 1;
-            margin: 30px auto;
-            padding: 20px;
-            background: var(--white);
+        main {
             max-width: 1200px;
-            width: 95%;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: #fff;
             border-radius: var(--radius);
+            padding: 24px;
             box-shadow: var(--shadow);
-            animation: fadeIn 0.3s ease;
         }
 
-        .btn { padding: 8px 16px; background: var(--primary); color: white; border-radius: 6px; cursor: pointer; }
-        .btn:hover { background: var(--primary-light); }
-
-        footer {
-            padding: 18px;
-            margin-top: 30px;
-            background: white;
-            text-align: center;
-            border-top: 1px solid #ddd;
-            color: #666;
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn:hover { background: var(--primary-dark); }
+        .btn.red { background: var(--danger); }
+        .btn.red:hover { opacity: .9; }
     </style>
 </head>
 
-<body>
-
-<!-- GLOBAL CSRF TOKEN -->
-<form id="csrf-global" style="display:none;">
-    {% csrf_token %}
-</form>
-
-<!-- HTMX CSRF -->
-<script>
-document.body.addEventListener("htmx:configRequest", function (event) {
-    const token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-    if (token) {
-        event.detail.headers['X-CSRFToken'] = token;
-    }
-});
-</script>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <header>
-    <div class="header-container">
-        <h1>Fleet Management System</h1>
+    <div class="header-inner">
+        <strong>Fleet Management</strong>
 
         <nav>
             <ul>
-                <li><a href="{% url 'home' %}" id="nav-home">Home</a></li>
-                <li><a href="{% url 'vehicle_list' %}" id="nav-vehicles">Vehicles</a></li>
-                <li><a href="{% url 'service_history_list' %}" id="nav-service">Service History</a></li>
-                <li><a href="{% url 'driver_list' %}" id="nav-drivers">Drivers</a></li>
-                <li><a href="{% url 'report_list' %}" id="nav-reports">Reports</a></li>
+                <li>
+                    <a href="{% url 'fleet:dashboard:home' %}">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'fleet:vehicles:vehicle_list' %}">
+                        Vehicles
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'fleet:clients:client_list' %}">
+                        Clients
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'fleet:services:service_history_entry' %}">
+                        Service
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'fleet:reports:report_select' %}">
+                        Reports
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
 </header>
 
-<main class="content-container">
-    {% block content %}
-    {% endblock %}
+
+<main>
+    <div class="card" id="main-content">
+        {% block content %}{% endblock %}
+    </div>
 </main>
-
-<footer>
-    &copy; {{ year }} Fleet Management System — All Rights Reserved.
-</footer>
-
-<script>
-const path = window.location.pathname;
-
-if (path.includes("vehicles")) document.getElementById("nav-vehicles").classList.add("active");
-if (path.includes("service-history")) document.getElementById("nav-service").classList.add("active");
-if (path.includes("drivers")) document.getElementById("nav-drivers").classList.add("active");
-if (path.includes("reports")) document.getElementById("nav-reports").classList.add("active");
-if (path === "/") document.getElementById("nav-home").classList.add("active");
-</script>
 
 </body>
 </html>
